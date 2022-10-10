@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+     integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="crossorigin=""/>
+     <!-- Jquery -->
+     <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="crossorigin="anonymous"></script>
+     <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+    integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="crossorigin=""></script>
+    <title>COFFEE SHOP MAPPER | Snex-Tech</title>
+</head>
+<body>
+    <br>
+    <h2>Coffee-Shop Mapper Developed by Snex-Tech Solutions.</h2>
+    <hr>
+    <div id="map" style="height: 800px; width: 100%"></div>
+    <script>
+
+        var google_streets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { 
+            maxZoom: 22,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        })
+
+        var b1 = L.latLng(-14.501123, -14.162721) // southwest
+        var b2 = L.latLng(38.769110, 51.227905) // northeast
+        var bounds = L.latLngBounds(b1, b2);
+
+        var map = L.map('map',{
+            zoom: 4,
+            center: [0.36, 36.63543],
+            layers: [google_streets,],
+            maxBounds: bounds,
+            maxZoom: 22,
+            minZoom: 4
+        });
+
+        var geojson = '{{view.shops|safe}}'
+        var geojson_valid = JSON.parse(geojson);
+        var shops = L.geoJson(geojson_valid, {
+            pointToLayer: function(feature, latlng){
+                return L.marker(latlng);
+            }
+        });
+        map.addLayer(shops);
+        // Another way of displaying data to the frontend without writing the views
+        // var url = "{% url 'shop_api' %}";
+        // $.getJSON(url, function(data){
+        //     shops.addData(data)
+        // })
+    </script>    
+</body>
+</html>
